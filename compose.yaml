@@ -1,0 +1,14 @@
+services:
+  atlassian:
+    container_name: jira
+    image: atlassian/jira-software:9.12.13-ubuntu-jdk11
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    environment:
+      JVM_SUPPORT_RECOMMENDED_ARGS: "-Dupm.plugin.upload.enabled=true"
+    volumes:
+      - jiraVolume:/var/atlassian/application-data/jira
+
+volumes:
+  jiraVolume:
