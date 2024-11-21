@@ -23,6 +23,7 @@
         <dependency>jira.webresources:jira-global</dependency>
         <dependency>com.atlassian.auiplugin:aui-progress-indicator</dependency>
         <dependency>com.atlassian.auiplugin:aui-experimental-progress-indicator</dependency>
+        <dependency>com.atlassian.auiplugin:aui-dropdown2</dependency>
 
         <!--макроподстановка ресурсов переводов в код javascript-->
         <transformation extension="js">
@@ -146,6 +147,21 @@
                class="ru.teamlead.jira.plugins.tutorial.listener.TutorialListener">
         <description>Class that processes the scheduled reminding</description>
     </component>
+
+    <!--start example-->
+
+    <ao key="example-ao-module">
+        <description>The module configuring the Active Objects service used by this plugin</description>
+        <entity>ru.teamlead.jira.plugins.tutorial.ao.ExampleEntity</entity>
+    </ao>
+
+    <issue-tabpanel key="example-issue-tab-panel" name="Example Issue Tab Panel" class="ru.teamlead.jira.plugins.tutorial.action.IssueTabExample">
+        <description>Панель с выпадающим списком</description>
+        <label>Пример панели</label>
+        <supports-ajax-load>true</supports-ajax-load>
+    </issue-tabpanel>
+
+    <!--end example-->
 
     <!--пункт меню в верхней панели -->
     <web-item key="tutorial-top-menu-item" name="Tutorial Top Menu Item" section="system.top.navigation.bar">

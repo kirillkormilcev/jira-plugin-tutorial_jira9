@@ -31,6 +31,12 @@ import com.atlassian.jira.web.bean.PagerFilter;
 import com.atlassian.jira.web.util.AuthorizationSupport;
 import com.atlassian.jira.workflow.WorkflowManager;
 import com.opensymphony.module.propertyset.PropertySet;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import net.java.ao.Query;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
@@ -38,6 +44,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import ru.teamlead.jira.plugins.tutorial.ao.ExampleEntity;
 
 /**
  * @author V.Nikolaev
@@ -221,5 +228,52 @@ public class TutorialUtilsImpl implements TutorialUtils {
         return ret;
     }
 
+    public void initEntities() {
 
+        List<ExampleEntity> entities = Arrays.asList(ao.find(ExampleEntity.class, Query.select()));
+
+        if (!isContains(entities)) {
+            ao.executeInTransaction(() -> {
+                ExampleEntity entity1 = ao.create(ExampleEntity.class);
+                entity1.setName("Главная");
+                entity1.setLink("/secure/MyJiraHome.jspa");
+                entity1.save();
+
+                ExampleEntity entity2 = ao.create(ExampleEntity.class);
+                entity2.setName("Мои задачи");
+                entity2.setLink("/issues/?filter=-4");
+                entity2.save();
+
+                return null;
+            });
+        }
+    }
+
+    private boolean isContains(List<ExampleEntity> entities) {
+        Set<String> setNames = new HashSet<>();
+        for (ExampleEntity entity : entities) {
+            setNames.add(entity.getName());
+        }
+        List<String> listNames = new ArrayList<>();
+        listNames.add("Главная");
+        listNames.add("Мои задачи");
+
+      return setNames.containsAll(listNames);
+    }
+
+
+    public Map<String, String> getMapOfEntities() {
+
+        Map<String, String> map = new HashMap<>();
+
+        List<ExampleEntity> entities;
+
+        entities = Arrays.asList(ao.find(ExampleEntity.class, Query.select()));
+
+        for (ExampleEntity entity : entities) {
+            map.put(entity.getName(), entity.getLink());
+        }
+
+        return map;
+    }
 }

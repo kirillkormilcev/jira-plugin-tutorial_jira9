@@ -1,0 +1,56 @@
+#*Пример выпадающего меню*#
+<button class="aui-button aui-dropdown2-trigger" aria-controls="example-dropdown"
+        xmlns:aui="http://www.w3.org/1999/html">
+  <span class="aui-icon aui-icon-small aui-iconfont-plan-disabled" role="img"/>
+</button>
+
+<aui-dropdown-menu id="example-dropdown">
+  <aui-section>
+
+    #foreach($key in $drops.keySet())
+      <aui-item-link href=$drops.get($key)>$key</aui-item-link>
+    #end
+
+  </aui-section>
+
+</aui-dropdown-menu>
+
+#*Пример диалогового окна*#
+<button id="dialog-show-button" class="aui-button">
+  <span class="aui-icon aui-icon-small aui-iconfont-shortcut" role="img"/>
+  </button>
+<section
+        id="demo-dialog"
+        class="aui-dialog2 aui-dialog2-small aui-layer"
+        role="dialog"
+        tabindex="-1"
+        aria-modal="true"
+        aria-labelledby="dialog-show-button--heading"
+        aria-describedby="dialog-show-button--description"
+        hidden
+>
+  <header class="aui-dialog2-header">
+    <h1 class="aui-dialog2-header-main" id="dialog-show-button--heading">Пример диалогового окна.</h1>
+  </header>
+  <div class="aui-dialog2-content" id="dialog-show-button--description">
+    <aui-label for="my-toggle">Передвинь и ничего не произойдет </aui-label>
+    <aui-toggle label="toggle button" id="my-toggle"></aui-toggle>
+  </div>
+  <footer class="aui-dialog2-footer">
+    <div class="aui-dialog2-footer-actions">
+      <button id="dialog-submit-button" class="aui-button aui-button-primary">Закрыть</button>
+    </div>
+    <script>
+      AJS.$("#dialog-show-button").on('click', function(e) {
+        e.preventDefault();
+        AJS.dialog2("#demo-dialog").show();
+      });
+      AJS.$("#dialog-submit-button").on('click', function (e) {
+        e.preventDefault();
+        AJS.dialog2("#demo-dialog").hide();
+      });
+    </script>
+  </footer>
+</section>
+
+

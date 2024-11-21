@@ -4,9 +4,10 @@ services:
     image: atlassian/jira-software:9.12.13-ubuntu-jdk11
     ports:
       - "8080:8080"
-      - "8081:8081"
+      - "5005:5005"
     environment:
       JVM_SUPPORT_RECOMMENDED_ARGS: "-Dupm.plugin.upload.enabled=true"
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,address=*:5005,suspend=n,server=y"
     volumes:
       - jiraVolume:/var/atlassian/application-data/jira
 

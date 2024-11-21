@@ -1,0 +1,220 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+package library <<Node>>{
+
+package model <<Frame>> {
+
+  +abstract class Item {
+    -String title
+    -LocalDate release
+    -Double rating
+    -ItemStatus item_status
+  }
+
+  +entity Book extends Item{
+    -UUID book_id
+    --
+    -String author
+    -String isbn
+    --
+    +getter()
+    +setter()
+  }
+
+  +entity Dvd extends Item{
+    -UUID dvd_id
+    --
+    -String director
+    --
+    +getter()
+    +setter()
+  }
+
+  +entity User {
+    -UUID user_id
+    --
+    -String name
+    -String surname
+    -String phone
+    -List<Rent> rents
+    --
+    +getter()
+    +setter()
+  }
+
+  +entity Rent {
+    -UUID rent_id
+    --
+    -User user_id
+    -List<Book> books
+    -RentStatus rent_status
+    -LocalDate start_rent
+    -LocalDate end_rent
+    --
+    +getter()
+    +setter()
+  }
+
+  +enum ItemStatus {
+    FREE
+    IN_RENT
+  }
+   +enum RentStatus {
+     STARTED
+     ENDED
+     EXPIRED
+   }
+
+  'связи model
+  Rent::rent_status "один" <--> "к одному" RentStatus
+  Book::book_id "многие" *-- "к одному" Rent::books
+  Rent::user_id "многие" *- "к одному" User::rents
+  Item::item_status "один" <-> "к одному" ItemStatus
+}
+
+package service <<Frame>> {
+
+
+  +interface UserService {
+  }
+
+  +class UserServiceImpl implements UserService{
+    -UserRepository
+    userLogic()
+  }
+
+  +interface ItemService{
+    commonLogic()
+  }
+  +class BookServiceImpl implements ItemService{
+    -BookRepository
+    bookLogic()
+  }
+  +class DvdServiceImpl implements ItemService{
+    -DvdRepository
+    dvdLogic()
+  }
+
+
+  +interface RentService {
+  }
+
+  +class RentServiceImpl implements RentService{
+    -RentRepository
+    rentLogic()
+  }
+
+  +interface NotificationService {
+  }
+
+  +class NotificationServiceImpl implements NotificationService{
+    -RentRepository
+    -UserRepository
+    notificationLogic()
+  }
+
+  +interface AuthService {
+  }
+
+  +class AuthServiceImpl implements AuthService{
+    -JwtService
+    -UserRepository
+    AuthLogic()
+  }
+  +interface JwtService {
+  }
+
+  +class JwtServiceImpl implements JwtService{
+    -JwtAuth
+    -JwtFilter
+    JwtLogic()
+  }
+
+  'связи service
+  JwtService --o AuthServiceImpl::JwtService
+}
+
+package controller <<Frame>> {
+
+  +interface UserController {
+    Swagger
+  }
+  +class UserControllerImpl implements UserController {
+    -UserService
+    restMethods()
+  }
+
+  +interface ItemController {
+    Swagger
+  }
+  +class ItemControllerImpl implements ItemController {
+    -ItemService
+    restMethods()
+  }
+
+  +interface RentController {
+    Swagger
+  }
+  +class RentControllerImpl implements RentController {
+    -RentService
+    restMethods()
+  }
+}
+
+package repository <<Database>> {
+
+  interface UserRepository {
+    Jpa, Hibernate
+  }
+
+  interface BookRepository {
+    Jpa, Hibernate
+  }
+
+  interface RentRepository {
+    Jpa, Hibernate
+  }
+
+  interface DvdRepository {
+    Jpa, Hibernate
+  }
+}
+
+package security <<Frame>> {
+
+  +class JwtAuth{
+  }
+
+  +class JwtFilter{
+  }
+}
+
+package config <<Frame>> {
+
+  +class Configuration {
+  }
+}
+
+package handler <<Frame>> {
+
+  +class ExceptionHandler{
+  }
+}
+
+'глобальные связи
+UserControllerImpl --o UserService
+ItemControllerImpl --o ItemService
+RentControllerImpl --o RentService
+
+service -[hidden]-> repository
+UserRepository --o UserServiceImpl::UserRepository
+UserRepository --o AuthServiceImpl::UserRepository
+BookRepository --o BookServiceImpl::BookRepository
+RentRepository --o RentServiceImpl::RentRepository
+DvdRepository --o DvdServiceImpl::DvdRepository
+
+JwtFilter --o JwtServiceImpl::JwtFilter
+JwtAuth --o JwtServiceImpl::JwtAuth
+}
+@enduml
