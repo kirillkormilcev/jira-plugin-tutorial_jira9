@@ -24,6 +24,7 @@
         <dependency>com.atlassian.auiplugin:aui-progress-indicator</dependency>
         <dependency>com.atlassian.auiplugin:aui-experimental-progress-indicator</dependency>
         <dependency>com.atlassian.auiplugin:aui-dropdown2</dependency>
+        <dependency>com.atlassian.auiplugin:aui-forms</dependency>
 
         <!--макроподстановка ресурсов переводов в код javascript-->
         <transformation extension="js">
@@ -155,11 +156,26 @@
         <entity>ru.teamlead.jira.plugins.tutorial.ao.ExampleEntity</entity>
     </ao>
 
-    <issue-tabpanel key="example-issue-tab-panel" name="Example Issue Tab Panel" class="ru.teamlead.jira.plugins.tutorial.action.IssueTabExample">
+    <issue-tabpanel key="example-issue-tab-panel"
+      name="Example Issue Tab Panel"
+      class="ru.teamlead.jira.plugins.tutorial.action.IssueTabExample">
         <description>Панель с выпадающим списком</description>
         <label>Пример панели</label>
         <supports-ajax-load>true</supports-ajax-load>
     </issue-tabpanel>
+
+    <issue-tabpanel key="example-issue-tab-panel-with-web-panel"
+      name="Example Issue Tab Panel with WebPanel"
+      class="ru.teamlead.jira.plugins.tutorial.action.IssueTabWithWebPanel">
+        <description>Панель с Web Panel</description>
+        <label>Web Panel</label>
+        <supports-ajax-load>true</supports-ajax-load>
+    </issue-tabpanel>
+
+    <servlet name="Web panel servlet" key="webpanel-servlet"
+      class="ru.teamlead.jira.plugins.tutorial.servlet.WebpanelServlet">
+        <url-pattern>/tutorial/save-link</url-pattern>
+    </servlet>
 
     <!--end example-->
 

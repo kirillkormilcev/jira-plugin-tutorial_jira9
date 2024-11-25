@@ -1,0 +1,27 @@
+<web-panel key="webpanel-example">
+  <resource name="view" type="static">
+    <form class="aui" action="/plugins/servlet/tutorial/save-link" method="post">
+      <h4>Добавление пунктов меню</h4>
+      <div class="field-group">
+        <label for="name">Пункт меню
+          <span class="aui-icon icon-required">(required)</span></label>
+        <input class="text medium-field" type="text" id="name"
+               name="name" placeholder="Пример">
+        <div class="description">Введите название пункта меню.</div>
+      </div>
+      <div class="field-group">
+        <label for="link">Ссылка
+          <span class="aui-icon icon-required">(required)</span></label>
+        <input class="text long-field" type="text" id="link"
+               name="link" placeholder="https://example.com/">
+        <div class="description">Введите ссылку для пункта меню.</div>
+      </div>
+      <div class="buttons-container">
+        <div class="buttons">
+          <input class="button submit" type="submit" value="Сохранить" id="comment-save-button">
+          <a class="cancel" href="#">Отмена</a>
+        </div>
+      </div>
+    </form>
+  </resource>
+</web-panel>

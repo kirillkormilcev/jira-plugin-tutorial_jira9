@@ -5,9 +5,11 @@ import com.atlassian.jira.bc.JiraServiceContext;
 import com.atlassian.jira.bc.JiraServiceContextImpl;
 import com.atlassian.jira.bc.filter.SearchRequestService;
 import com.atlassian.jira.bc.issue.search.SearchService;
+import com.atlassian.jira.bc.issue.search.SearchService.ParseResult;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.config.IssueTypeManager;
 import com.atlassian.jira.config.StatusManager;
+import com.atlassian.jira.config.properties.APKeys;
 import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.atlassian.jira.issue.CustomFieldManager;
 import com.atlassian.jira.issue.Issue;
@@ -27,9 +29,11 @@ import com.atlassian.jira.security.groups.GroupManager;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.jira.util.JiraDurationUtils;
+import com.atlassian.jira.util.VelocityParamFactory;
 import com.atlassian.jira.web.bean.PagerFilter;
 import com.atlassian.jira.web.util.AuthorizationSupport;
 import com.atlassian.jira.workflow.WorkflowManager;
+import com.atlassian.velocity.VelocityManager;
 import com.opensymphony.module.propertyset.PropertySet;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -69,15 +73,22 @@ public class TutorialUtilsImpl implements TutorialUtils {
     private final GlobalPermissionManager globalPermissionManager;
     private final JiraPropertySetFactory jiraPropertySetFactory;
     private final SearchService searchService;
+    private final VelocityManager velocityManager;
+    private final  VelocityParamFactory velocityParamFactory;
     protected static PropertySet ps;
 
-    public TutorialUtilsImpl(ActiveObjects ao, WorkflowManager workflowManager, GroupManager groupManager,
-                             ProjectManager projectManager, CustomFieldManager customFieldManager,
-                             IssueTypeManager issueTypeManager, StatusManager statusManager,
-                             IssueSecurityLevelManager issueSecurityLevelManager, FieldScreenManager fieldScreenManager,
-                             UserManager userManager, IssueManager issueManager, ApplicationProperties applicationProperties,
-                             GlobalPermissionManager globalPermissionManager, JiraPropertySetFactory jiraPropertySetFactory,
-                             SearchService searchService) {
+    public TutorialUtilsImpl(ActiveObjects ao, WorkflowManager workflowManager,
+        GroupManager groupManager,
+        ProjectManager projectManager, CustomFieldManager customFieldManager,
+        IssueTypeManager issueTypeManager, StatusManager statusManager,
+        IssueSecurityLevelManager issueSecurityLevelManager, FieldScreenManager fieldScreenManager,
+        UserManager userManager, IssueManager issueManager,
+        ApplicationProperties applicationProperties,
+        GlobalPermissionManager globalPermissionManager,
+        JiraPropertySetFactory jiraPropertySetFactory,
+        SearchService searchService, VelocityManager velocityManager,
+        VelocityParamFactory velocityParamFactory
+    ) {
         this.ao = ao;
         this.workflowManager = workflowManager;
         this.groupManager = groupManager;
@@ -93,6 +104,8 @@ public class TutorialUtilsImpl implements TutorialUtils {
         this.globalPermissionManager = globalPermissionManager;
         this.jiraPropertySetFactory = jiraPropertySetFactory;
         this.searchService = searchService;
+        this.velocityManager = velocityManager;
+        this.velocityParamFactory = velocityParamFactory;
 
         ps = this.jiraPropertySetFactory.buildCachingPropertySet("tutorial-ps.properties", 1l);
     }
@@ -109,7 +122,7 @@ public class TutorialUtilsImpl implements TutorialUtils {
             String projectId = jql.replace("project-", "");
             Project project = projectManager.getProjectObj(Long.valueOf(projectId));
             String projectQuery = " project = " + project.getKey();
-            final SearchService.ParseResult parseResult = searchService.parseQuery(user, projectQuery);
+            final ParseResult parseResult = searchService.parseQuery(user, projectQuery);
             if (parseResult.isValid()) {
                 try {
                     final SearchResults results = searchService
@@ -233,7 +246,7 @@ public class TutorialUtilsImpl implements TutorialUtils {
         List<ExampleEntity> entities = Arrays.asList(ao.find(ExampleEntity.class, Query.select()));
 
         if (!isContains(entities)) {
-            ao.executeInTransaction(() -> {
+            String res = ao.executeInTransaction(() -> {
                 ExampleEntity entity1 = ao.create(ExampleEntity.class);
                 entity1.setName("Главная");
                 entity1.setLink("/secure/MyJiraHome.jspa");
@@ -244,8 +257,11 @@ public class TutorialUtilsImpl implements TutorialUtils {
                 entity2.setLink("/issues/?filter=-4");
                 entity2.save();
 
-                return null;
+                return "true";
             });
+
+            if (!res.equals("true"))
+                log.error("{\"errors\": {\"" + res + "\"}}");
         }
     }
 
@@ -275,5 +291,17 @@ public class TutorialUtilsImpl implements TutorialUtils {
         }
 
         return map;
+    }
+
+    public String getBaseUrl() {
+        return applicationProperties.getString(APKeys.JIRA_BASEURL);
+    }
+
+    public String getWebworkEncoding() {
+        return applicationProperties.getString(APKeys.JIRA_WEBWORK_ENCODING);
+    }
+
+    public Map<String, Object> getVelocityContext() {
+        return velocityParamFactory.getDefaultVelocityParams();
     }
 }

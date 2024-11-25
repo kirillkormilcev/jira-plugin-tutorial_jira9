@@ -22,4 +22,10 @@ public interface TutorialUtils {
     void initEntities();
 
     Map<String, String> getMapOfEntities();
+
+    String getBaseUrl();
+
+    String getWebworkEncoding();
+
+    Map<String, Object> getVelocityContext();
 }

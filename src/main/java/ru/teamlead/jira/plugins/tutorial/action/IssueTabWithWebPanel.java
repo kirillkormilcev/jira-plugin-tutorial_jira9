@@ -8,22 +8,19 @@ import com.atlassian.jira.plugin.issuetabpanel.ShowPanelRequest;
 import com.atlassian.velocity.VelocityManager;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import ru.teamlead.jira.plugins.tutorial.listener.TutorialUtils;
 
-public class IssueTabExample extends AbstractIssueTabPanel3 {
-
+public class IssueTabWithWebPanel extends AbstractIssueTabPanel3 {
   private final VelocityManager velocityManager;
   private final TutorialUtils tutorialUtils;
 
-  public IssueTabExample(
+  public IssueTabWithWebPanel(
       VelocityManager velocityManager,
       TutorialUtils tutorialUtils
   ) {
     this.velocityManager = velocityManager;
     this.tutorialUtils = tutorialUtils;
   }
-
   @Override
   public boolean showPanel(ShowPanelRequest showPanelRequest) {
     return true;
@@ -32,20 +29,12 @@ public class IssueTabExample extends AbstractIssueTabPanel3 {
   @Override
   public List<IssueAction> getActions(GetActionsRequest getActionsRequest) {
 
-    Map<String, Object> context = tutorialUtils.getVelocityContext();
-
-    tutorialUtils.initEntities();
-
-    Map<String, String> drops = tutorialUtils.getMapOfEntities();
-
-    context.put("drops", drops);
-
     String renderedHtml = velocityManager.getEncodedBody(
-        "templates/tutorial/dropdown/",
-        "dropdown-example.vm",
+        "templates/tutorial/webpanel/",
+        "webpanel-example.vm",
         tutorialUtils.getBaseUrl(),
         tutorialUtils.getWebworkEncoding(),
-        context);
+        tutorialUtils.getVelocityContext());
 
     return Collections.singletonList(new GenericMessageAction(renderedHtml));
   }
