@@ -36,6 +36,7 @@ import com.opensymphony.module.propertyset.PropertySet;
 import net.java.ao.Query;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import ru.teamlead.jira.plugins.tutorial.ao.ExampleEntity;
 import ru.teamlead.jira.plugins.tutorial.ao.Tutorialitem;
 import ru.teamlead.jira.plugins.tutorial.listener.IssueVO;
 import ru.teamlead.jira.plugins.tutorial.listener.TutorialUtils;
@@ -448,5 +449,32 @@ public class TutorialRest {
 
 //        String res = new String(result.toString().substring(6));
 //        return Response.ok(res.substring(0, res.length() - 1)).build();
+    }
+
+    @GET
+    @Path("/saveLink")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response saveLink(
+        @QueryParam("name") final String name,
+        @QueryParam("link") final String link
+    ) throws JSONException {
+        final JSONObject ret = new JSONObject();
+
+        String res = ao.executeInTransaction(() -> {
+
+            ExampleEntity entity = ao.create(ExampleEntity.class);
+            entity.setName(name);
+            entity.setLink(link);
+            entity.save();
+            return "true";
+        });
+
+        if (res.equals("true")) {
+            ret.put("success", true);
+        } else {
+            log.error(res);
+            ret.put("success", false);
+        }
+        return Response.ok(ret.toString()).build();
     }
 }

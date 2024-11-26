@@ -16,3 +16,7 @@ P.S. Работа с бд на примитивном уровне, да и вс
 
 9. Добавил [web-panel](src/main/resources/templates/tutorial/webpanel/webpanel-example.vm) с Velocity в [Issue Tab Panel](src/main/java/ru/teamlead/jira/plugins/tutorial/action/IssueTabWithWebPanel.java).
 10. [Реализовал](src/main/java/ru/teamlead/jira/plugins/tutorial/servlet/WebpanelServlet.java) добавление записей в [таблицу](src/main/java/ru/teamlead/jira/plugins/tutorial/ao/ExampleEntity.java) через форму.
+---
+11. Отправка [формы](src/main/resources/templates/tutorial/webpanel/webpanel-example.vm) посредством Javascript, Ajax. Сохранение по [ресту](src/main/java/ru/teamlead/jira/plugins/tutorial/rest/TutorialRest.java) (saveLink()).
+
+P.S. Пока не разобрался с работой подстановки i18n, в процессе.

@@ -172,10 +172,15 @@
         <supports-ajax-load>true</supports-ajax-load>
     </issue-tabpanel>
 
-    <servlet name="Web panel servlet" key="webpanel-servlet"
+<!--    <servlet name="Web panel servlet" key="webpanel-servlet"
       class="ru.teamlead.jira.plugins.tutorial.servlet.WebpanelServlet">
         <url-pattern>/tutorial/save-link</url-pattern>
-    </servlet>
+    </servlet>-->
+
+    <web-panel key="webpanel-example" location="example-issue-tab-panel-with-web-panel">
+        <resource name="view" type="velocity" location="templates/tutorial/webpanel/webpanel-example.vm"/>
+        <label key="tl.tutorial"/>
+    </web-panel>
 
     <!--end example-->
 

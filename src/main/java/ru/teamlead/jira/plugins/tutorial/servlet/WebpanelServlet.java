@@ -8,6 +8,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import ru.teamlead.jira.plugins.tutorial.ao.ExampleEntity;
 
+/**
+ * @deprecated
+ */
+@Deprecated
 public class WebpanelServlet extends HttpServlet {
   private static final Logger log = Logger.getLogger(WebpanelServlet.class);
 

@@ -1,7 +1,6 @@
-<web-panel key="webpanel-example">
-  <resource name="view" type="static">
-    <form class="aui" action="/plugins/servlet/tutorial/save-link" method="post">
-      <h4>Добавление пунктов меню</h4>
+  <form class="aui" id="menu-form" action="#" method="post">
+    <h4>Добавление пунктов меню</h4>
+    <fieldset>
       <div class="field-group">
         <label for="name">Пункт меню
           <span class="aui-icon icon-required">(required)</span></label>
@@ -16,12 +15,64 @@
                name="link" placeholder="https://example.com/">
         <div class="description">Введите ссылку для пункта меню.</div>
       </div>
-      <div class="buttons-container">
-        <div class="buttons">
-          <input class="button submit" type="submit" value="Сохранить" id="comment-save-button">
-          <a class="cancel" href="#">Отмена</a>
-        </div>
+    </fieldset>
+    <div class="buttons-container">
+      <div class="buttons">
+        <input class="button submit" type="button" value="Сохранить" id="form-save-button">
+        <a class="cancel" href="#" id="form-cancel-button">Отмена</a>
       </div>
-    </form>
-  </resource>
-</web-panel>
+    </div>
+  </form>
+
+<script type='text/javascript'>
+  jQuery(document).ready(function () {
+
+    jQuery('#form-save-button').click(function () {
+
+      var popup = new AJS.Dialog('aui-save-dialog-example');
+
+      var confirm = 'Сохранить?';
+
+      popup.addHeader('Сохранение');
+      popup.addButton('Сохранить', function (dialog) {
+        popup.hide();
+        dialog.hide();
+        saveLink();
+      }, 'aui-save-yes-button');
+
+      popup.addLink('Отмена', function (dialog) {
+        popup.hide();
+        dialog.hide();
+        jQuery("#aui-save-dialog-example").remove();
+        jQuery(".aui-save-dialog-example").remove();
+      }, 'aui-save-no-button');
+
+      popup.addPanel("1", "<div>" + confirm + "</div>", "panel-body");
+
+      popup.show();
+    });
+  });
+
+  function saveLink() {
+
+    var data = {
+      name: jQuery('#name').val(),
+      link: jQuery('#link').val()
+    };
+
+    jQuery.ajax({
+      method: "get",
+      data: data,
+      dataType: "json",
+      url: AJS.contextPath() + "/rest/tutorial-rest/latest/tutorial/saveLink",
+      success: function (response, textStatus, jqXHR) {
+        if (response.success) {
+          JIRA.Messages.showSuccessMsg("Ссылка сохранена.");
+        }
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        JIRA.Messages.showErrorMsg("Произошла ошибка.");
+      }
+    });
+  }
+</script>
